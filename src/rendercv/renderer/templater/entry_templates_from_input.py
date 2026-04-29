@@ -3,6 +3,9 @@ import textwrap
 from datetime import date as Date
 
 from rendercv.exception import RenderCVInternalError
+from rendercv.schema.models.cv.entries.bases.entry_with_complex_fields import (
+    HighlightItem,
+)
 from rendercv.schema.models.cv.entries.publication import PublicationEntry
 from rendercv.schema.models.cv.section import Entry
 from rendercv.schema.models.design.classic_theme import Templates
@@ -226,8 +229,13 @@ def render_entry_templates[EntryType: Entry](
     return entry
 
 
-def process_highlights(highlights: list[str]) -> str:
+def process_highlights(highlights: list[str | HighlightItem]) -> str:
     """Convert highlight list to Markdown unordered list with nested items.
+
+    Why:
+        Highlights may be plain strings or HighlightItem objects with optional title
+        subheaders. This formats them consistently for both Markdown and Typst output,
+        treating title fields as bold subheaders followed by the body text.
 
     Example:
         ```py
@@ -235,6 +243,7 @@ def process_highlights(highlights: list[str]) -> str:
             [
                 "Led team of 5 engineers",
                 "Reduced costs - Server optimization - Database indexing",
+                HighlightItem(title="Efficiency", body="Improved by 20%"),
             ]
         )
         # Returns:
@@ -242,16 +251,24 @@ def process_highlights(highlights: list[str]) -> str:
         # - Reduced costs
         #   - Server optimization
         #   - Database indexing
+        # - **Efficiency** Improved by 20%
         ```
 
     Args:
-        highlights: Highlight strings with optional " - " for sub-bullets.
+        highlights: Highlight strings, HighlightItem objects, or mix thereof.
+            Strings with " - " are split into nested sub-bullets.
 
     Returns:
         Markdown list string with nested indentation.
     """
-    highlights = ["- " + highlight.replace(" - ", "\n  - ") for highlight in highlights]
-    return "\n".join(highlights)
+    result_parts: list[str] = []
+    for highlight in highlights:
+        if isinstance(highlight, HighlightItem):
+            title_prefix = f"**{highlight.title}** " if highlight.title else ""
+            result_parts.append(f"- {title_prefix}{highlight.body}")
+        else:
+            result_parts.append("- " + highlight.replace(" - ", "\n  - "))
+    return "\n".join(result_parts)
 
 
 def process_authors(authors: list[str]) -> str:

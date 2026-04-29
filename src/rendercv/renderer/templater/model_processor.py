@@ -165,7 +165,7 @@ def process_fields(
     Returns:
         Entry with processed fields.
     """
-    skipped = {"start_date", "end_date", "doi", "url"}
+    skipped = {"start_date", "end_date", "doi", "url", "highlights"}
 
     if isinstance(entry, str):
         return apply_string_processors(entry, string_processors)

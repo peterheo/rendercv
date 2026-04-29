@@ -87,6 +87,30 @@ def get_date_object(date: str | int, current_date: Date | None = None) -> Date:
     return date_object
 
 
+class HighlightItem(pydantic.BaseModel):
+    """A highlight with optional title subheader and required body text.
+
+    Args:
+        title: Optional subheader for the highlight item.
+        body: The main content of the highlight item.
+    """
+
+    model_config = pydantic.ConfigDict(json_schema_extra={"description": None})
+
+    title: str | None = pydantic.Field(
+        default=None,
+        description="Optional subheader for the highlight item.",
+        examples=["Performance Optimization", "Team Leadership"],
+    )
+    body: str = pydantic.Field(
+        description="The main content of the highlight item.",
+        examples=[
+            "Increased system performance by 40% through optimization.",
+            "Mentored 3 junior developers",
+        ],
+    )
+
+
 class BaseEntryWithComplexFields(BaseEntryWithDate):
     model_config = pydantic.ConfigDict(json_schema_extra={"description": None})
 
@@ -117,7 +141,7 @@ class BaseEntryWithComplexFields(BaseEntryWithDate):
             ),
         ],
     )
-    highlights: list[str] | None = pydantic.Field(
+    highlights: list[str | HighlightItem] | None = pydantic.Field(
         default=None,
         description=(
             "Bullet points for key achievements, responsibilities, or contributions."
@@ -127,7 +151,17 @@ class BaseEntryWithComplexFields(BaseEntryWithDate):
                 "Increased system performance by 40% through optimization.",
                 "Mentored 3 junior developers and conducted code reviews.",
                 "Implemented CI/CD pipeline reducing deployment time by 60%.",
-            ]
+            ],
+            [
+                HighlightItem(
+                    title="Performance Optimization",
+                    body="Increased system performance by 40%",
+                ),
+                HighlightItem(
+                    title="Team Leadership",
+                    body="Mentored 3 junior developers",
+                ),
+            ],
         ],
     )
 
