@@ -41,7 +41,7 @@ cv:
             - "Modernized a legacy Java/JSP domain lookup application by containerizing components with Docker, improving deployment consistency and reducing environment-related issues"
     skills:
       - label: "Languages"
-        details: "Python, Java, OPA Rego"
+        details: "Python, Java, OPA Rego, JavaScript"
       - label: "Tools"
         details: "AWS, Terraform, Docker, Jenkins, Claude Code"
     education:
