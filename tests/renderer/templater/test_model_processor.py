@@ -58,14 +58,17 @@ class TestProcessFields:
         process_fields(entry, [fn])
 
         assert "hello" in seen
-        assert "a" in seen
-        assert "b" in seen
         assert "Remote" in seen
+
+        # highlights are skipped in process_fields because they get formatted
+        # during render_entry_templates
+        assert "a" not in seen
+        assert "b" not in seen
 
         assert "2020-01-01" not in seen
         assert "2020-02-01" not in seen
         assert entry.summary == "processed-hello"
-        assert entry.highlights == ["processed-a", "processed-b"]
+        assert entry.highlights == ["a", "b"]
         assert entry.location == "processed-Remote"
 
         assert entry.start_date == "2020-01-01"

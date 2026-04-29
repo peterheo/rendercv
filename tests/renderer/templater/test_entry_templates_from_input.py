@@ -37,14 +37,16 @@ from rendercv.schema.models.locale.locale import locale_adapter
     ("highlights", "expected"),
     [
         (
-            ["First line", "Second line - Nested"],
-            "- First line\n- Second line\n  - Nested",
+            ["First line", "Second line"],
+            "- First line\n- Second line",
         ),
         (["Single item"], "- Single item"),
         (["Item 1", "Item 2", "Item 3"], "- Item 1\n- Item 2\n- Item 3"),
         (
-            ["Parent - Child 1", "Item 2 - Nested item"],
-            "- Parent\n  - Child 1\n- Item 2\n  - Nested item",
+            [
+                "Simple highlight",
+            ],
+            "- Simple highlight",
         ),
     ],
 )

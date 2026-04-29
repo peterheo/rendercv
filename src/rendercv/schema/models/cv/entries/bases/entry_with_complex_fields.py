@@ -88,25 +88,31 @@ def get_date_object(date: str | int, current_date: Date | None = None) -> Date:
 
 
 class HighlightItem(pydantic.BaseModel):
-    """A highlight with optional title subheader and required body text.
+    """A highlight group with optional title subheader and body items.
 
     Args:
-        title: Optional subheader for the highlight item.
-        body: The main content of the highlight item.
+        title: Optional subheader for the highlight group.
+        body: List of body items for the highlight group.
     """
 
     model_config = pydantic.ConfigDict(json_schema_extra={"description": None})
 
     title: str | None = pydantic.Field(
         default=None,
-        description="Optional subheader for the highlight item.",
+        description="Optional subheader for the highlight group.",
         examples=["Performance Optimization", "Team Leadership"],
     )
-    body: str = pydantic.Field(
-        description="The main content of the highlight item.",
+    body: list[str] = pydantic.Field(
+        default_factory=list,
+        description="List of key achievements, responsibilities, or contributions.",
         examples=[
-            "Increased system performance by 40% through optimization.",
-            "Mentored 3 junior developers",
+            [
+                "Increased system performance by 40% through optimization.",
+                "Mentored 3 junior developers",
+            ],
+            [
+                "Implemented CI/CD pipeline reducing deployment time by 60%.",
+            ],
         ],
     )
 
@@ -155,11 +161,11 @@ class BaseEntryWithComplexFields(BaseEntryWithDate):
             [
                 HighlightItem(
                     title="Performance Optimization",
-                    body="Increased system performance by 40%",
+                    body=["Increased system performance by 40%"],
                 ),
                 HighlightItem(
                     title="Team Leadership",
-                    body="Mentored 3 junior developers",
+                    body=["Mentored 3 junior developers"],
                 ),
             ],
         ],

@@ -230,44 +230,48 @@ def render_entry_templates[EntryType: Entry](
 
 
 def process_highlights(highlights: list[str | HighlightItem]) -> str:
-    """Convert highlight list to Markdown unordered list with nested items.
+    """Convert highlight list to Markdown unordered list grouped by sections.
 
     Why:
         Highlights may be plain strings or HighlightItem objects with optional title
-        subheaders. This formats them consistently for both Markdown and Typst output,
-        treating title fields as bold subheaders followed by the body text.
+        subheaders and body lists. This formats them consistently for both Markdown
+        and Typst output, treating title fields as bold subheaders, and each body item
+        as a separate bullet point under the section.
 
     Example:
         ```py
         result = process_highlights(
             [
                 "Led team of 5 engineers",
-                "Reduced costs - Server optimization - Database indexing",
-                HighlightItem(title="Efficiency", body="Improved by 20%"),
+                HighlightItem(
+                    title="Performance",
+                    body=["Improved by 20\\%", "Reduced latency by 50ms"],
+                ),
             ]
         )
         # Returns:
         # - Led team of 5 engineers
-        # - Reduced costs
-        #   - Server optimization
-        #   - Database indexing
-        # - **Efficiency** Improved by 20%
+        # **Performance**
+        # - Improved by 20%
+        # - Reduced latency by 50ms
         ```
 
     Args:
         highlights: Highlight strings, HighlightItem objects, or mix thereof.
-            Strings with " - " are split into nested sub-bullets.
+            HighlightItem objects have optional title and list of body items.
 
     Returns:
-        Markdown list string with nested indentation.
+        Markdown list string with sectioned highlight groups.
     """
     result_parts: list[str] = []
     for highlight in highlights:
         if isinstance(highlight, HighlightItem):
-            title_prefix = f"**{highlight.title}** " if highlight.title else ""
-            result_parts.append(f"- {title_prefix}{highlight.body}")
+            if highlight.title:
+                result_parts.append(f"**{highlight.title}**")
+            for body_item in highlight.body:
+                result_parts.append(f"- {body_item}")
         else:
-            result_parts.append("- " + highlight.replace(" - ", "\n  - "))
+            result_parts.append(f"- {highlight}")
     return "\n".join(result_parts)
 
 

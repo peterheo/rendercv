@@ -103,7 +103,7 @@ The `cv.sections` field is a dictionary where keys are section titles (any strin
 | `end_date` | `str \| int \| "present" \| null` | `null` | Same formats as `start_date`, or `"present"`. Omitting defaults to `"present"` when `start_date` is set. |
 | `location` | `str \| null` | `null` | |
 | `summary` | `str \| null` | `null` | |
-| `highlights` | `list[str] \| null` | `null` | Bullet points. |
+| `highlights` | `list[str \| dict] \| null` | `null` | Bullet points. Each item is a string or a dict with `title` and `body` keys for highlighted sub-headers. |
 
 **9 entry types:**
 
